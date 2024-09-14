@@ -1,0 +1,22 @@
+{
+    "manifest_version": 3,
+    "name": "PalmLabs",
+    "version": "1.0",
+    "description": "Shows a popup when text is selected",
+    "permissions": ["activeTab"],
+    "content_scripts": [
+      {
+        "matches": ["<all_urls>"],
+        "js": ["dist/content.js"]
+      }
+    ],
+    "background": {
+      "service_worker": "dist/background.js"
+    },
+    "action": {
+      "default_popup": "dist/popup/popup.js",
+      "default_icon": {
+        "16": "icons/palmlabs_logo.png"
+      }
+    }
+  }
