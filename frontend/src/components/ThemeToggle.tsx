@@ -11,7 +11,7 @@ export function ThemeToggle() {
       <ToggleGroupItem value="light" aria-label="Light">
         <SunIcon />
       </ToggleGroupItem>
-      <ToggleGroupItem value="dark" aria-label="Dark">
+      <ToggleGroupItem value="light" aria-label="Light">
         <MoonIcon />
       </ToggleGroupItem>
       <ToggleGroupItem value="system" aria-label="System">

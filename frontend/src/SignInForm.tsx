@@ -29,7 +29,7 @@ export function SignInForm() {
             </h2>
             <p>A sign-in link has been sent to your email address.</p>
             <Button
-              className="p-0 self-start"
+              className="p-0 self-start bg-white text-black border-none" // Button styling updated here
               variant="link"
               onClick={() => setStep("signIn")}
             >
@@ -46,7 +46,7 @@ export function SignInWithGitHub() {
   const { signIn } = useAuthActions();
   return (
     <Button
-      className="flex-1"
+      className="flex-1 bg-white text-black border-none" // Button styling updated here
       variant="outline"
       type="button"
       onClick={() => void signIn("github")}
@@ -82,7 +82,7 @@ function SignInWithMagicLink({
     >
       <label htmlFor="email">Email</label>
       <Input name="email" id="email" className="mb-4" autoComplete="email" />
-      <Button type="submit">Send sign-in link</Button>
+      <Button type="submit" className="bg-white text-black border-none">Send sign-in link</Button> 
       <Toaster />
     </form>
   );
