@@ -4,7 +4,7 @@ from llm_call import get_response
 hard_letters = list(set(['t', 'a', 'u', 'g', 'h']))
 
 def fetch_user(username):
-    response = requests.get(f'http://localhost:3000/users/{username}/api/run_llm')
+    response = requests.get(f'http://localhost:3000/users/{username}')
     if response.status_code == 200:
         return response.json()
     else:
@@ -12,7 +12,8 @@ def fetch_user(username):
         return None
 
 def update_user(username, selected_text, hard_letters):
-    response = requests.put(f'http://localhost:3000/users/{username}/api/run_llm', json={
+
+    response = requests.put(f'http://localhost:3000/users/{username}', json={
         'selected_text': selected_text,
         'hard_letters': hard_letters
     })
@@ -32,18 +33,21 @@ def run_llm():
     if hard_letters:
         response = get_response(f"Provide one simple sentence with more of the following letters in it: {hard_letters}. Do not include more sentences")
     else:
-        response = get_response("Provide one simple english sentence")
+        response = get_response("Provide one simple, VERY VERY concise English sentence.")
     content = response['choices'][0]['message']['content']
-    
-    # Fetch user data
-    username = "john.smith@usc.edu"  # Replace with the actual username if available
-    user_data = fetch_user(username)
-    
-    if user_data:
-        # Clear user data
-        clear_user_data(username)
-        
-        # Update user data
-        update_user(username, content, hard_letters)
+    print("\n\n\n", content, "\n\n\n")
 
-run_llm()
+    return content
+
+    # # Fetch user data
+    # username = "john.smith@usc.edu"  # Replace with the actual username if available
+    # user_data = fetch_user(username)
+    
+    # if user_data:
+    #     # Clear user data
+    #     clear_user_data(username)
+        
+    #     # Update user data
+    #     update_user(username, content, hard_letters)
+
+    

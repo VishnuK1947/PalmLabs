@@ -3,11 +3,14 @@
     "version": "1.0.0",
     "description": "Chrome extension that shows a popup when text is selected",
     "scripts": {
-      "build": "tsc",
-      "watch": "tsc -w"
+        "build": "tsc",
+        "watch": "tsc -w"
     },
     "devDependencies": {
-      "typescript": "^4.5.5",
-      "@types/chrome": "^0.0.177"
+        "@types/chrome": "^0.0.177",
+        "typescript": "^4.5.5"
+    },
+    "dependencies": {
+        "chrome": "^0.1.0"
     }
-  }
+}

@@ -10,9 +10,10 @@ import cv2
 import mediapipe as mp
 import os
 import psycopg2
-from psycopg2.extras import RealDictCursor
+from psycopg2.extras import Json, RealDictCursor
 
 from cv_backend.inference import DetectASL
+from agent import run_llm
 
 app = FastAPI()
 asl = DetectASL("cv_backend/asl_1")
@@ -144,6 +145,52 @@ async def get_asl():
     finally:
         if conn:
             conn.close()
+
+@app.post("/api/run-llm")
+async def api_run_llm():
+    content = "Preset"
+    hard_letters = list(set(['t', 'a', 'u', 'g', 'h']))
+    username = "john.smith@usc.edu"
+
+    try:
+        content = run_llm()
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"LLM error: {str(e)}")
+    
+    # Database operations
+    conn = get_db_connection()
+    try:
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            # Delete the existing user
+            cur.execute('DELETE FROM users WHERE username = %s', (username,))
+            
+            # Insert the user with new data
+            cur.execute('''
+                INSERT INTO users (username, selected_text, hard_letters) 
+                VALUES (%s, %s, %s) 
+                RETURNING *
+            ''', (username, content, Json(hard_letters)))
+            
+            updated_user = cur.fetchone()
+        conn.commit()  # Commit the transaction
+        
+        # Return a response
+        return {
+            "message": "LLM run successful, user deleted and recreated",
+            "content": content,
+            "hard_letters": hard_letters,
+            "updated_user": updated_user
+        }
+        
+    except Exception as db_error:
+        conn.rollback()  # Rollback in case of error
+        print(f"Database error: {str(db_error)}")
+        raise HTTPException(status_code=500, detail=f"Database error: {str(db_error)}")
+    finally:
+        conn.close()
+    
+    
 
 if __name__ == "__main__":
     import uvicorn

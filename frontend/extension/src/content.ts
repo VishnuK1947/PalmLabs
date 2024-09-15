@@ -9,34 +9,85 @@ class SelectionPopup {
         this.popup = document.createElement('div');
         const popupStyles: PopupStyles = {
             position: 'fixed',
-            top: '20px',
+            top: '0px',  // Start from the top
             right: '20px',
-            backgroundColor: 'white',
-            border: '1px solid #ccc',
-            padding: '10px',
-            borderRadius: '5px',
-            boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
+            backgroundColor: '#2C7873',
+            border: 'none',
+            padding: '16px 20px',
+            borderRadius: '12px',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
             zIndex: '9999',
-            fontSize: '14px'
+            fontFamily: 'Arial, sans-serif',
+            color: 'white',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            width: '300px',
+            opacity: '0',  // Start fully transparent
+            transform: 'translateY(-20px)',  // Start slightly above final position
+            transition: 'opacity 0.3s ease, transform 0.3s ease, top 0.3s ease'  // Smooth transition for fade and slide
         };
 
         Object.assign(this.popup.style, popupStyles);
-        this.popup.textContent = 'Text selected! Run program?';
+
+        const textSpan = document.createElement('span');
+        textSpan.textContent = 'Ready to practice ASL?';
+        textSpan.style.fontSize = '16px';
+        textSpan.style.fontWeight = '600';
 
         const button = document.createElement('button');
-        button.textContent = 'Run';
-        button.style.marginLeft = '10px';
+        button.textContent = 'Go!';
+        const buttonStyles: PopupStyles = {
+            backgroundColor: 'white',
+            color: '#2C7873',
+            border: 'none',
+            padding: '8px 16px',
+            borderRadius: '8px',
+            fontSize: '14px',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            marginLeft: '10px'
+        };
+        Object.assign(button.style, buttonStyles);
         button.addEventListener('click', this.runProgram.bind(this, selection));
+        button.addEventListener('mouseover', () => {
+            button.style.backgroundColor = '#e0e0e0';
+            button.style.transform = 'scale(1.05)';
+        });
+        button.addEventListener('mouseout', () => {
+            button.style.backgroundColor = 'white';
+            button.style.transform = 'scale(1)';
+        });
 
+        this.popup.appendChild(textSpan);
         this.popup.appendChild(button);
         document.body.appendChild(this.popup);
+
+        // Trigger the animation after a short delay
+        setTimeout(() => {
+            if (this.popup) {
+                this.popup.style.opacity = '1';
+                this.popup.style.transform = 'translateY(0)';
+                this.popup.style.top = '20px';
+            }
+        }, 50);
     }
 
     private removePopup(): void {
         if (this.popup && document.body.contains(this.popup)) {
-            document.body.removeChild(this.popup);
+            // Fade out animation
+            this.popup.style.opacity = '0';
+            this.popup.style.transform = 'translateY(-20px)';
+            
+            // Remove the element after the animation completes
+            setTimeout(() => {
+                if (this.popup && document.body.contains(this.popup)) {
+                    document.body.removeChild(this.popup);
+                }
+                this.popup = null;
+            }, 300);  // Match this with the transition duration
         }
-        this.popup = null;
     }
 
     private async runProgram(selection: Selection): Promise<void> {
@@ -55,7 +106,7 @@ class SelectionPopup {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({username: "john.smith@usc.edu", selected_text : selectedText, hard_letters: []}), // Adjust the payload as needed
+                body: JSON.stringify({username: "john.smith@usc.edu", selected_text : selectedText, hard_letters: []}),
             });
 
             if (!response.ok) {

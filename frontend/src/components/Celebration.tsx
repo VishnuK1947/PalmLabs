@@ -20,8 +20,8 @@ const Celebration: React.FC = () => {
       width={windowDimension.width}
       height={windowDimension.height}
       recycle={false}
-      numberOfPieces={800}
-      tweenDuration={10000}
+      numberOfPieces={1000}
+      tweenDuration={15000}
     />
   );
 };

@@ -9,3 +9,6 @@
 *.DS_Store
 
 .env
+gamification/package-lock.json
+gamification/package.json
+gamification/node_modules/

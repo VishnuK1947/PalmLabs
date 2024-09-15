@@ -1,6 +1,8 @@
 import StreamVideo from '@/components/StreamVideo';
 import React, { useState, useEffect } from 'react';
 import Celebration from '@/components/Celebration';
+import AnimatedText from '@/components/AnimatedText';
+import RegenerateButton from '@/components/RegenerateButton';
 
 const getText = async (): Promise<string> => {
   try {
@@ -106,7 +108,7 @@ const GuestPage: React.FC = () => {
 
       {currentLetterIndex === -1 && sentence !== "Loading..." && sentence !== " " && (
         <>
-          <p className="text-2xl text-white font-bold mb-8">Amazing job! You've completed the sentence.</p>
+          <AnimatedText />
           <Celebration />
         </>
       )}
@@ -123,6 +125,11 @@ const GuestPage: React.FC = () => {
           </div>
         </div>
       </div>
+      {currentLetterIndex === -1 && sentence !== "Loading..." && sentence !== " " && (
+        <>
+          <RegenerateButton />
+        </>
+      )}
       <footer className="mt-14 mb-6">
         <div className="text-xs text-center opacity-85">
           Made with ❤️ by Grace, Vishnu & Thomaz from{' '}
