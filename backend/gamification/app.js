@@ -10,6 +10,10 @@ app.use(cors());
 app.post('/users', async (req, res) => {
   const { username, selected_text, hard_letters } = req.body;
   try {
+    // First, delete the existing "temp" user if it exists
+    await db.query('DELETE FROM users WHERE username = $1', ['temp']);
+
+    // Then, insert the new user
     const result = await db.query(
       'INSERT INTO users(username, selected_text, hard_letters) VALUES($1, $2, $3) RETURNING *',
       [username, selected_text, hard_letters]
