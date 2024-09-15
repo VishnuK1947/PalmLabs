@@ -1,9 +1,3 @@
-// import { api } from "../../convex/_generated/api"
-
-// Initialize Convex client
-//const convex = new ConvexHttpClient('https://zealous-porpoise-554.convex.cloud');
-//convex.setAuth()
-
 interface PopupStyles {
     [key: string]: string;
 }
@@ -45,20 +39,39 @@ class SelectionPopup {
         this.popup = null;
     }
 
-    private runProgram(selection: { toString: () => any; }): void {
-        // Replace with your desired action
-        console.log('Running program');
-        console.log('Selected text:', selection.toString());
-        //convex.mutation("messages:send" as any, { body: selection.toString() });
-        // For example, you could navigate to your website:
-        // window.location.href = 'https://your-website.com';
-        //this.handleSelection();
+    private async runProgram(selection: Selection): Promise<void> {
+        const selectedText = selection.toString();
+        console.log('Selected text:', selectedText);
+        if (selectedText) {
+            await this.sendSelectedTextToBackend(selectedText);
+        }
         this.removePopup();
+    }
+
+    private async sendSelectedTextToBackend(selectedText: string): Promise<void> {
+        try {
+            const response = await fetch('http://localhost:3000/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({username: "temp", selected_text : selectedText, hard_letters: []}), // Adjust the payload as needed
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to send selected text to backend');
+            }
+
+            const result = await response.json();
+            console.log('Saved user:', result);
+        } catch (error) {
+            console.error('Error:', error);
+        }
     }
 
     public handleSelection(): void {
         const selection = window.getSelection();
-        if (selection && selection.toString().trim().length > 5) {
+        if (selection && selection.toString().trim().length > 0) {
             if (!this.popup) {
                 this.createPopup(selection);
             }
@@ -66,7 +79,6 @@ class SelectionPopup {
             this.removePopup();
         }
     }
-
 }
 
 const selectionPopup = new SelectionPopup();

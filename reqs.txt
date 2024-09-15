@@ -1,2 +1,5 @@
 uagents
 python-dotenv
+express
+pg
+cors
