@@ -1,13 +1,27 @@
-import { ReactNode } from "react";
-import { GetStartedDialog } from "@/GetStarted/GetStartedDialog";
+import { ReactNode, useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
+import { Toaster } from "@/components/ui/toaster";
 
 export function Layout({
   menu,
   children,
+  onGuestContinue,
 }: {
   menu?: ReactNode;
   children: ReactNode;
+  onGuestContinue: () => void;
 }) {
+  const { toast } = useToast();
+
+  const handleGuestContinue = (event: React.MouseEvent) => {
+    event.preventDefault();
+    toast({
+      title: "Continuing as Guest",
+      description: "You're being redirected to the next page.",
+    });
+    onGuestContinue();
+  };
+
   return (
     <div className="flex h-screen w-full flex-col bg-gradient-to-b from-cyan-300 via-white-300 to-yellow-300 text-white">
       <header className="sticky top-0 z-10 flex min-h-20 backdrop-blur">
@@ -22,11 +36,11 @@ export function Layout({
           </div>
           {menu}
           <div className="flex items-center gap-4">
-            {/* Skip Link Moved Up */}
+            {/* Continue as Guest Link */}
             <a
-              href="https://docs.convex.dev"
+              href="#"
               className="transition-colors hover:text-gray-300 text-sm"
-              target="_blank"
+              onClick={handleGuestContinue}
             >
               Continue as Guest
             </a>
@@ -52,6 +66,7 @@ export function Layout({
           {/* Additional footer content */}
         </div>
       </footer>
+      <Toaster />
     </div>
   );
 }
