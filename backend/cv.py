@@ -1,12 +1,24 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from PIL import Image
 import base64
 import io
-from PIL import Image
 import time
 
-app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+app = FastAPI()
+
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+)
+
+class FrameData(BaseModel):
+    frame: str
 
 # Placeholder for your actual inference function
 def run_inference(image):
@@ -15,15 +27,11 @@ def run_inference(image):
     time.sleep(0.5)  # Simulate processing time
     return ([0.8, 0.15, 0.05], ['A', 'B', 'C'], 0.5)
 
-@app.route('/api/detect-asl', methods=['POST'])
-def detect_asl():
+@app.post("/api/detect-asl")
+async def detect_asl(frame_data: FrameData):
     try:
-        # Get the frame data from the request
-        data = request.json
-        frame_data = data['frame']
-
         # The frame_data is a base64 encoded string, so we need to decode it
-        _, encoded = frame_data.split(",", 1)
+        _, encoded = frame_data.frame.split(",", 1)
         image_data = base64.b64decode(encoded)
 
         # Convert to PIL Image
@@ -40,10 +48,11 @@ def detect_asl():
             "time_elapsed": time_elapsed
         }
 
-        return jsonify(response), 200
+        return response
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        raise HTTPException(status_code=400, detail=str(e))
 
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
