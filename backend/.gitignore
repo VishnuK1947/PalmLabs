@@ -1,3 +1,10 @@
 
 # venv
-.venv
+*.venv
+/cv_backend
+
+# git ignore all pycache
+/__pycache__/
+*.pyc
+*.DS_Store
+

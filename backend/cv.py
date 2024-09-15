@@ -6,6 +6,8 @@ import base64
 import io
 import time
 
+from cv_backend.inference import DetectASL
+
 app = FastAPI()
 
 # Configure CORS

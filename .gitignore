@@ -1,2 +1,5 @@
-# ignore cv
-/cv
+
+
+# begone
+*.pyc
+*.DS_Store
