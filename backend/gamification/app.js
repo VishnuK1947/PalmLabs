@@ -88,6 +88,26 @@ app.delete('/users/:username', async (req, res) => {
   }
 });
 
+// Delete selected_text and hard_letters of a user
+app.patch('/users/:username/clear', async (req, res) => {
+    const { username } = req.params;
+    try {
+      const result = await db.query(
+        'UPDATE users SET selected_text = NULL, hard_letters = NULL WHERE username = $1 RETURNING *',
+        [username]
+      );
+      if (result.rows.length === 0) {
+        res.status(404).json({ error: 'User not found' });
+      } else {
+        res.json(result.rows[0]);
+      }
+    } catch (err) {
+      console.error('Error details:', err); // Log detailed error
+      res.status(500).json({ error: 'An error occurred while clearing the user data' });
+    }
+  });
+
+  
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

@@ -1,12 +1,10 @@
 import requests
 from llm_call import get_response
 
-# for testing and presentation
 hard_letters = list(set(['t', 'a', 'u', 'g', 'h']))
-username = "john.smith@usc.edu"
 
 def fetch_user(username):
-    response = requests.get(f'http://localhost:3000/users/{username}')
+    response = requests.get(f'http://localhost:3000/users/{username}/api/run_llm')
     if response.status_code == 200:
         return response.json()
     else:
@@ -14,7 +12,7 @@ def fetch_user(username):
         return None
 
 def update_user(username, selected_text, hard_letters):
-    response = requests.put(f'http://localhost:3000/users/{username}', json={
+    response = requests.put(f'http://localhost:3000/users/{username}/api/run_llm', json={
         'selected_text': selected_text,
         'hard_letters': hard_letters
     })
@@ -22,6 +20,13 @@ def update_user(username, selected_text, hard_letters):
         print("User updated successfully")
     else:
         print(f"Error updating user: {response.status_code}")
+
+def clear_user_data(username):
+    response = requests.patch(f'http://localhost:3000/users/{username}/clear')
+    if response.status_code == 200:
+        print("User data cleared successfully")
+    else:
+        print(f"Error clearing user data: {response.status_code}")
 
 def run_llm():
     if hard_letters:
@@ -35,6 +40,9 @@ def run_llm():
     user_data = fetch_user(username)
     
     if user_data:
+        # Clear user data
+        clear_user_data(username)
+        
         # Update user data
         update_user(username, content, hard_letters)
 
