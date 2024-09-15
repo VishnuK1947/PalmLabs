@@ -108,6 +108,23 @@ async def detect_asl(frame_data: FrameData):
     except Exception as e:
         print(f"Error: {str(e)}")
         raise HTTPException(status_code=400, detail=str(e))
+    
+@app.get("/api/asl-text")
+async def get_asl():
+    try:
+        # get text response from database
+
+        # IMPLEMENT LATER
+        # IMPLEMENT LATER
+        # IMPLEMENT LATER
+
+        response = "Show want"
+        
+        return response
+
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        raise HTTPException(status_code=400, detail=str(e))
 
 if __name__ == "__main__":
     import uvicorn

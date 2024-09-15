@@ -7,7 +7,12 @@ interface DetectionResult {
   time_elapsed: number;
 }
 
-const StreamVideo: React.FC = () => {
+interface StreamVideoProps {
+  currentLetter: string | null;
+  onLetterDetected: (letter: string) => void;
+}
+
+const StreamVideo: React.FC<StreamVideoProps> = ({ currentLetter, onLetterDetected }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [detectionResult, setDetectionResult] = useState<DetectionResult | null>(null);
@@ -37,7 +42,6 @@ const StreamVideo: React.FC = () => {
           context.drawImage(videoRef.current, -canvasRef.current.width, 0, canvasRef.current.width, canvasRef.current.height);
           context.scale(-1, 1);
           const frameData = canvasRef.current.toDataURL('image/jpeg');
-          console.log("Frame captured, sending to backend...");
           sendFrameToBackend(frameData);
         }
       }
@@ -45,7 +49,6 @@ const StreamVideo: React.FC = () => {
 
     const sendFrameToBackend = async (frameData: string): Promise<void> => {
       try {
-        console.log("Sending request to backend...");
         const response = await fetch('http://localhost:8000/api/detect-asl', {
           method: 'POST',
           headers: {
@@ -53,14 +56,12 @@ const StreamVideo: React.FC = () => {
           },
           body: JSON.stringify({ frame: frameData }),
         });
-        console.log("Received response from backend");
-        console.log(response)
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const result: DetectionResult = await response.json();
-        console.log("Parsed response:", result);
         setDetectionResult(result);
+        checkDetectedLetter(result.top_classes);
         setError(null);
       } catch (err) {
         console.error("Error sending frame to backend:", err);
@@ -68,8 +69,14 @@ const StreamVideo: React.FC = () => {
       }
     };
 
+    const checkDetectedLetter = (topClasses: string[]) => {
+      if (currentLetter && topClasses.includes(currentLetter)) {
+        onLetterDetected(currentLetter);
+      }
+    };
+
     startCamera();
-    intervalId = setInterval(captureFrame, 2000); // stream every 2000
+    intervalId = setInterval(captureFrame, 2000); // stream every 2000ms
 
     return () => {
       if (stream) {
@@ -79,34 +86,32 @@ const StreamVideo: React.FC = () => {
         clearInterval(intervalId);
       }
     };
-  }, []);
+  }, [currentLetter, onLetterDetected]);
 
   return (
     <div>
-        <div className="flex flex-col items-center justify-center p-4">
+      <div className="flex flex-col items-center justify-center p-4">
         <video 
-            ref={videoRef} 
-            autoPlay 
-            playsInline 
-            muted 
-            className="w-full max-w-md mb-4 transform scale-x-[-1]"
+          ref={videoRef} 
+          autoPlay 
+          playsInline 
+          muted 
+          className="w-full max-w-md mb-4 transform scale-x-[-1]"
         />
-        </div>
-        <div>
-            <canvas ref={canvasRef} className="hidden" width="640" height="480" />
-            {error && (
-                <div className="text-red-500 font-bold mb-4">
-                Error: {error}
-                </div>
-            )}
-            {detectionResult && (
-                <div className="text-lg font-bold mb-4 text-center">
-                {/* <p>Detected ASL: {detectionResult.detection}</p> */}
-                {/* <p>Time Elapsed: {detectionResult.time_elapsed} seconds</p> */}
-                <p>Top 3: {detectionResult.top_classes}</p>
-                </div>
-            )}
-        </div>
+      </div>
+      <div>
+        <canvas ref={canvasRef} className="hidden" width="640" height="480" />
+        {error && (
+          <div className="text-red-500 font-bold mb-4">
+            Error: {error}
+          </div>
+        )}
+        {detectionResult && (
+          <div className="text-lg font-bold mb-4 text-center">
+            <p>Top 3: {detectionResult.top_classes.join(', ')}</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
