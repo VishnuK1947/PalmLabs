@@ -82,27 +82,31 @@ const StreamVideo: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center p-4">
-      <video 
-        ref={videoRef} 
-        autoPlay 
-        playsInline 
-        muted 
-        className="w-full max-w-md mb-4 transform scale-x-[-1]"
-      />
-      <canvas ref={canvasRef} className="hidden" width="640" height="480" />
-      {error && (
-        <div className="text-red-500 font-bold mb-4">
-          Error: {error}
+    <div>
+        <div className="flex flex-col items-center justify-center p-4">
+        <video 
+            ref={videoRef} 
+            autoPlay 
+            playsInline 
+            muted 
+            className="w-full max-w-md mb-4 transform scale-x-[-1]"
+        />
         </div>
-      )}
-      {detectionResult && (
-        <div className="text-lg font-bold">
-          <p>Detected ASL: {detectionResult.detection}</p>
-          <p>Top 3 Classes: {detectionResult.top_classes}</p>
-          <p>Time Elapsed: {detectionResult.time_elapsed} seconds</p>
+        <div>
+            <canvas ref={canvasRef} className="hidden" width="640" height="480" />
+            {error && (
+                <div className="text-red-500 font-bold mb-4">
+                Error: {error}
+                </div>
+            )}
+            {detectionResult && (
+                <div className="text-lg font-bold mb-4 text-center">
+                {/* <p>Detected ASL: {detectionResult.detection}</p> */}
+                {/* <p>Time Elapsed: {detectionResult.time_elapsed} seconds</p> */}
+                <p>Top 3: {detectionResult.top_classes}</p>
+                </div>
+            )}
         </div>
-      )}
     </div>
   );
 };
