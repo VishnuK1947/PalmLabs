@@ -54,6 +54,7 @@ const StreamVideo: React.FC = () => {
           body: JSON.stringify({ frame: frameData }),
         });
         console.log("Received response from backend");
+        console.log(response)
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -68,7 +69,7 @@ const StreamVideo: React.FC = () => {
     };
 
     startCamera();
-    intervalId = setInterval(captureFrame, 1000);
+    intervalId = setInterval(captureFrame, 2000); // stream every 2000
 
     return () => {
       if (stream) {
@@ -98,8 +99,8 @@ const StreamVideo: React.FC = () => {
       {detectionResult && (
         <div className="text-lg font-bold">
           <p>Detected ASL: {detectionResult.detection}</p>
-          <p>Top 3 Classes: {detectionResult.top_classes.join(', ')}</p>
-          <p>Time Elapsed: {detectionResult.time_elapsed.toFixed(3)} seconds</p>
+          <p>Top 3 Classes: {detectionResult.top_classes}</p>
+          <p>Time Elapsed: {detectionResult.time_elapsed} seconds</p>
         </div>
       )}
     </div>

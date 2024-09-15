@@ -5,17 +5,20 @@ from PIL import Image
 import base64
 import io
 import time
+import numpy as np
+import cv2
 
 from cv_backend.inference import DetectASL
 
 app = FastAPI()
+asl = DetectASL("cv_backend/asl_1")
 
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Allows all origins
     allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods
+    allow_methods=["POST"],
     allow_headers=["*"],  # Allows all headers
 )
 
@@ -23,36 +26,44 @@ class FrameData(BaseModel):
     frame: str
 
 # Placeholder for your actual inference function
-def run_inference(image):
-    # This is where you'd implement your actual inference logic
-    # For now, we'll return dummy data
-    time.sleep(0.5)  # Simulate processing time
-    return ([0.8, 0.15, 0.05], ['A', 'B', 'C'], 0.5)
 
 @app.post("/api/detect-asl")
 async def detect_asl(frame_data: FrameData):
     try:
-        # The frame_data is a base64 encoded string, so we need to decode it
+        # Decode the base64 image
         _, encoded = frame_data.frame.split(",", 1)
         image_data = base64.b64decode(encoded)
 
-        # Convert to PIL Image
-        image = Image.open(io.BytesIO(image_data))
+        # Convert to numpy array
+        nparr = np.frombuffer(image_data, np.uint8)
+        
+        # Decode the image using OpenCV
+        image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        print(f"Image received shape: {image.shape}")
+
+        # Convert BGR to RGB
+        image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        print(f"Image converted to RGB")
+        
+        # Resize the image
+        resized_image = cv2.resize(image_rgb, (64, 64))
+        print(f"Image resized to shape: {resized_image.shape}")
 
         # Run inference
-        probabilities, top_classes, time_elapsed = run_inference(image)
+        probabilities, top_classes, time_elapsed = asl.run_inference(resized_image)
 
         # Prepare the response
         response = {
-            "detection": top_classes[0],  # Return the top class
+            "detection": top_classes[0],
             "probabilities": probabilities,
             "top_classes": top_classes,
             "time_elapsed": time_elapsed
         }
-
+        
         return response
 
     except Exception as e:
+        print(f"Error: {str(e)}")
         raise HTTPException(status_code=400, detail=str(e))
 
 if __name__ == "__main__":
