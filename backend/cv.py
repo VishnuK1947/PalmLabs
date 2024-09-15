@@ -8,11 +8,16 @@ import time
 import numpy as np
 import cv2
 import mediapipe as mp
+import os
+import psycopg2
+from psycopg2.extras import RealDictCursor
 
 from cv_backend.inference import DetectASL
 
 app = FastAPI()
 asl = DetectASL("cv_backend/asl_1")
+
+
 
 # initialize hands
 mp_hands = mp.solutions.hands
@@ -109,22 +114,36 @@ async def detect_asl(frame_data: FrameData):
         print(f"Error: {str(e)}")
         raise HTTPException(status_code=400, detail=str(e))
     
+def get_db_connection():
+    return psycopg2.connect(
+        host="localhost",
+        database="palm_labs",
+        user="postgres",
+        password="DB_PASS",
+        port=5432
+    )
+
 @app.get("/api/asl-text")
 async def get_asl():
     try:
-        # get text response from database
+        conn = get_db_connection()
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            cur.execute("SELECT selected_text FROM users ORDER BY username DESC LIMIT 1")
+            result = cur.fetchone()
 
-        # IMPLEMENT LATER
-        # IMPLEMENT LATER
-        # IMPLEMENT LATER
-
-        response = "Show w"
+        if result:
+            response = result['selected_text']
+        else:
+            response = "No ASL text found in database"
         
         return response
 
     except Exception as e:
         print(f"Error: {str(e)}")
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+    finally:
+        if conn:
+            conn.close()
 
 if __name__ == "__main__":
     import uvicorn
