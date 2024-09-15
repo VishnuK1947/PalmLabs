@@ -82,7 +82,7 @@ function SignInWithMagicLink({
     >
       <label htmlFor="email">Email</label>
       <Input name="email" id="email" className="mb-4" autoComplete="email" />
-      <Button type="submit" className="bg-white text-black border-none">Send sign-in link</Button> 
+      <Button type="submit" className="bg-white text-black border-none">Send Sign-in link</Button> 
       <Toaster />
     </form>
   );
