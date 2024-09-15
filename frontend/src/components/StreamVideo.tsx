@@ -101,14 +101,9 @@ const StreamVideo: React.FC<StreamVideoProps> = ({ currentLetter, onLetterDetect
       </div>
       <div>
         <canvas ref={canvasRef} className="hidden" width="640" height="480" />
-        {error && (
-          <div className="text-red-500 font-bold mb-4">
-            Error: {error}
-          </div>
-        )}
         {detectionResult && (
           <div className="text-lg font-bold mb-4 text-center">
-            <p>Top 3: {detectionResult.top_classes.join(', ')}</p>
+            {/* <p>Top 3: {detectionResult.top_classes.join(', ')}</p> */}
           </div>
         )}
       </div>

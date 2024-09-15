@@ -15,7 +15,7 @@ export function SignInForm() {
       <div className="max-w-[384px] mx-auto flex flex-col my-auto gap-4 pb-8">
         {step === "signIn" ? (
           <>
-            <h2 className="font-semibold text-2xl tracking-tight">
+            <h2 className="font-semibold text-m mx-10">
               Sign in or create an account
             </h2>
             <SignInWithGitHub />
@@ -24,7 +24,7 @@ export function SignInForm() {
           </>
         ) : (
           <>
-            <h2 className="font-semibold text-2xl tracking-tight">
+            <h2 className="font-normal text-2xl tracking-tight">
               Check your email
             </h2>
             <p>A sign-in link has been sent to your email address.</p>
@@ -46,7 +46,7 @@ export function SignInWithGitHub() {
   const { signIn } = useAuthActions();
   return (
     <Button
-      className="flex-1 bg-white text-black border-none" // Button styling updated here
+      className="flex-1 bg-white text-black border-gray-100" // Button styling updated here
       variant="outline"
       type="button"
       onClick={() => void signIn("github")}
@@ -80,10 +80,17 @@ function SignInWithMagicLink({
           });
       }}
     >
-      <label htmlFor="email">Email</label>
-      <Input name="email" id="email" className="mb-4" autoComplete="email" />
-      <Button type="submit" className="bg-white text-black border-none">Send Sign-in link</Button> 
-      <Toaster />
+      <label htmlFor="email" className="font-semibold text-m">Email</label>
+    <Input 
+      name="email" 
+      id="email" 
+      className="mb-4 border-gray-300 focus:outline-none focus:ring-0 focus:border-gray-300 active:outline-none active:ring-0 active:border-gray-300" 
+      autoComplete="email" 
+    />
+    <Button type="submit" className="shadow-sm bg-white text-black border-gray-300 focus-visible:ring-0 focus:outline-none">
+      Send Sign-in link
+    </Button> 
+    <Toaster />
     </form>
   );
 }

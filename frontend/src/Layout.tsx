@@ -24,7 +24,7 @@ export function Layout({
 
   return (
     <div className="flex h-screen w-full flex-col bg-gradient-to-br from-cyan-300 via-white-300 to-yellow-300 text-white">
-      <style jsx global>{`
+      <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
 
         .sign-in-area {
@@ -101,7 +101,7 @@ export function Layout({
             alt="PalmLabs Logo"
             className="h-24 mr-4 logo"
           />
-          <h1 className="text-4xl font-bold font-poppins text-white text-[100px] drop-shadow-[0_5px_5px_rgba(0,0,0,0.3)]">
+          <h1 className="text-4xl font-bold font-poppins text-white text-[70px] drop-shadow-[0_5px_5px_rgba(0,0,0,0.3)]">
             PalmLabs
           </h1>
         </div>

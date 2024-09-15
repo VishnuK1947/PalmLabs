@@ -118,7 +118,7 @@ async def get_asl():
         # IMPLEMENT LATER
         # IMPLEMENT LATER
 
-        response = "Show want"
+        response = "Show w"
         
         return response
 

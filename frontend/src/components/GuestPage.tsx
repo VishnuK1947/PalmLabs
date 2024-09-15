@@ -1,5 +1,6 @@
 import StreamVideo from '@/components/StreamVideo';
 import React, { useState, useEffect } from 'react';
+import Celebration from '@/components/Celebration';
 
 const getText = async (): Promise<string> => {
   try {
@@ -16,7 +17,7 @@ const getText = async (): Promise<string> => {
     return result.toUpperCase(); // Convert to uppercase for consistency
   } catch (err) {
     console.error("Error fetching ASL text:", err);
-    return "Failed to fetch ASL text";
+    return " ";
   }
 };
 
@@ -71,13 +72,22 @@ const GuestPage: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-cyan-300 via-white-300 to-yellow-300 p-4">
-      <h1 className="text-4xl font-bold text-white mb-4">Palm Labs.</h1>
+      <div className="flex justify-center items-center p-4 mt-8">
+          <img
+            src="public/yellow2.png"
+            alt="PalmLabs Logo"
+            className="h-12 mr-4 logo"
+          />
+          <h1 className="text-4xl font-bold font-poppins text-white text-[40px] drop-shadow-[0_5px_5px_rgba(0,0,0,0.3)]">
+            PalmLabs
+          </h1>
+      </div>
       
       <p className="text-xl text-white mb-8 text-center">
         {sentence.split('').map((char, index) => (
           <span key={index} className={`
             ${index === currentLetterIndex ? 'bg-yellow-300 text-black' : ''}
-            ${index < currentLetterIndex && isValidLetter(char) ? 'text-gray-400' : ''}
+            ${index < currentLetterIndex && isValidLetter(char) ? 'text-gray-400 opacity-50' : ''}
             ${isValidLetter(char) ? 'px-1' : ''}
           `}>
             {char}
@@ -87,15 +97,18 @@ const GuestPage: React.FC = () => {
       
       {getCurrentLetter() && (
         <div className="mb-8">
-          <p className="text-lg text-white mb-2">Sign this letter:</p>
+          <p className="text-lg text-white mb-2 items-center">Sign this letter:</p>
           <div className="text-6xl font-bold bg-white text-black rounded-full w-24 h-24 flex items-center justify-center shadow-lg">
             {getCurrentLetter()}
           </div>
         </div>
       )}
 
-      {currentLetterIndex === -1 && sentence !== "Loading..." && (
-        <p className="text-2xl text-white font-bold mb-8">Great job! You've completed the sentence.</p>
+      {currentLetterIndex === -1 && sentence !== "Loading..." && sentence !== " " && (
+        <>
+          <p className="text-2xl text-white font-bold mb-8">Amazing job! You've completed the sentence.</p>
+          <Celebration />
+        </>
       )}
 
       <div className="relative">
@@ -110,6 +123,29 @@ const GuestPage: React.FC = () => {
           </div>
         </div>
       </div>
+      <footer className="mt-14 mb-6">
+        <div className="text-xs text-center opacity-85">
+          Made with ❤️ by Grace, Vishnu & Thomaz from{' '}
+          <span className="usc-gradient-text font-bold">USC</span>✌️.
+        </div>
+      </footer>
+
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes gradient {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+        .usc-gradient-text {
+          background: linear-gradient(270deg, #990000, #FFC72C);
+          background-size: 200% 200%;
+          animation: gradient 5s ease infinite;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          color: transparent;
+        }
+      `}} />
     </div>
   );
 };
