@@ -11,7 +11,7 @@ app.post('/users', async (req, res) => {
   const { username, selected_text, hard_letters } = req.body;
   try {
     // First, delete the existing "temp" user if it exists
-    await db.query('DELETE FROM users WHERE username = $1', ['temp']);
+    await db.query('DELETE FROM users WHERE username = $1', ['john.smith@usc.edu']);
 
     // Then, insert the new user
     const result = await db.query(

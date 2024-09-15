@@ -55,7 +55,7 @@ class SelectionPopup {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({username: "temp", selected_text : selectedText, hard_letters: []}), // Adjust the payload as needed
+                body: JSON.stringify({username: "john.smith@usc.edu", selected_text : selectedText, hard_letters: []}), // Adjust the payload as needed
             });
 
             if (!response.ok) {
