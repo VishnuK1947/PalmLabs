@@ -6,6 +6,7 @@ import { SignInForm } from "@/SignInForm";
 import { UserMenu } from "@/components/UserMenu";
 import { Authenticated, Unauthenticated, useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
+import StreamVideo from '@/components/StreamVideo';
 
 // New GuestPage component
 const GuestPage = () => {
@@ -13,6 +14,8 @@ const GuestPage = () => {
     <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-b from-cyan-300 via-white-300 to-yellow-300">
       <h1 className="text-4xl font-bold text-white mb-4">Welcome, Guest!</h1>
       <p className="text-xl text-white">This is your basic guest page.</p>
+      <h1>ASL Detection</h1>
+      <div><StreamVideo /></div>
     </div>
   );
 };
