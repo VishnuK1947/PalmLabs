@@ -1,5 +1,7 @@
 # PalmLabs
 
+## See the HackMIT post [here](https://ballot.hackmit.org/project/cxhxt-ryocx-ezugb-dcuxl)
+
 ## Sign Language Recognition Project
 
 PalmLabs combines a Google Chrome Extension and a web application to make communication more accessible through advanced computer vision technology.
